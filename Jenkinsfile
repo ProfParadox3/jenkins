@@ -4,8 +4,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo "Checking out code from Git repository"
-
                 checkout([
                     $class: 'GitSCM',
                     branches: [
@@ -13,44 +11,41 @@ pipeline {
                     ],
                     userRemoteConfigs: [
                         [url: 'https://github.com/ProfParadox3/jenkins.git',
-                         credentialsId:'github-pat']
+                         credentialsId: 'github-pat']
                     ]
                 ])
             }
         }
 
         stage('Build') {
-            tools {
-                maven 'maven-3.9.10'
-            }
             steps {
-                echo "Installing and building...."
-                bat "mvn clean install"
+                // Change directory if your pom.xml is not in root
+                // dir('your-module') {
+                    bat 'mvn clean install'
+                // }
             }
         }
 
         stage('Test') {
             steps {
-                echo "Running Tests...."
-                bat "mvn test"
+                bat 'mvn test'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deploying...."
-                // Insert your deploy script or command here
-                // sh "./deploy.sh"
+                echo 'Deploying application…'
+                // Deployment script or command
             }
         }
     }
 
     post {
         success {
-            echo "Build finished successfully!"
+            echo 'Build finished successfully!'
         }
         failure {
-            echo "Build failed. Please check console output for details."
+            echo 'Build failed. Please check console output for details!'
         }
     }
 }
