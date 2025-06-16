@@ -1,8 +1,5 @@
-steps {
-    checkout([$class:'GitSCM', …])
-
-    // Change directory to where pom.xml is located
-    dir('app') {
-        bat 'mvn clean install'
+stage('Debug') {
+    steps {
+        bat 'dir'
     }
 }
