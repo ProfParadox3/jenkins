@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Source code checkout from Git
                 checkout([
                     $class: 'GitSCM',
                     branches: [
@@ -17,38 +18,40 @@ pipeline {
             }
         }
 
-        stage('Debug') {
-            steps {
-                echo "Current directory: ${pwd()}"
-                bat "dir"
-            }
-        }
-
         stage('Build') {
             steps {
-                bat "mvn clean install"
+                // Maven build
+                withMaven(mavenInstallation:'maven-3.9.10') {
+                    // Windows pe 'sh' ki jagah 'bat'
+                    bat 'mvn clean install'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                bat "mvn test"
+                echo 'Running Tests'
+                // Aap mvn test bhi kar sakte hain
+                withMaven(mavenInstallation:'maven-3.9.10') {
+                    bat 'mvn test'
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deploying application…"
+                echo 'Deploying application'
+                // Deployment script ya command idhar lagega
             }
         }
     }
 
     post {
-        failure {
-            echo "Build failed. Please check console output for details."
-        }
         success {
-            echo "Build finished successfully!"
+            echo 'Build finished successfully!'
+        }
+        failure {
+            echo 'Build failed. Please check console output for details.'
         }
     }
 }
