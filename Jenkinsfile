@@ -1,5 +1,5 @@
 pipeline {
-    agent any // Run this pipeline on any available agent
+    agent any
 
     stages {
         stage('Checkout') {
@@ -7,30 +7,32 @@ pipeline {
                 echo "Checking out code from Git repository"
 
                 checkout([
-                    $class: 'GithubSCMSource',
-                    credentialsId: 'github-pat',
-                    repositoryOwner: 'ProfParadox3',
-                    repository: 'jenkins',
-                    branchName:'main'
+                    $class: 'GitSCM',
+                    branches: [
+                        [name: '*/main']
+                    ],
+                    userRemoteConfigs: [
+                        [url: 'https://github.com/ProfParadox3/jenkins.git',
+                         credentialsId:'github-pat']
+                    ]
                 ])
             }
         }
 
         stage('Build') {
             tools {
-                // This name should match the Maven installation configured under "Manage Jenkins" -> "Global Tool Configuration"
                 maven 'maven-3.9.10'
             }
             steps {
                 echo "Installing and building...."
-                sh "mvn clean install"
+                bat "mvn clean install"
             }
         }
 
         stage('Test') {
             steps {
                 echo "Running Tests...."
-                sh "mvn test"
+                bat "mvn test"
             }
         }
 
