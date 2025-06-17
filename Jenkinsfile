@@ -10,7 +10,7 @@ pipeline {
         [name:'main']
     ],
     userRemoteConfigs: [
-        [url:'https://github.com/your-user/your-repo.git',
+        [url:'https://github.com/Prof.Paradox/jenkins',
           credentialsId:'github-pat']
     ]
 ])
