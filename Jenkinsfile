@@ -5,14 +5,16 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout([
-                    $class: 'GithubSCM',
-                    branches: [
-                        [name: env.BRANCH_NAME]
-                    ],
-                    userRemoteConfigs: [
-                        [url: 'https://github.com/ProfParadox/jenkins']
-                    ]
-                ])
+    $class: 'GitSCM',
+    branches: [
+        [name:'main']
+    ],
+    userRemoteConfigs: [
+        [url:'https://github.com/your-user/your-repo.git',
+          credentialsId:'github-pat']
+    ]
+])
+
             }
         }
 
